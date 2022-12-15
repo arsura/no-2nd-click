@@ -1,8 +1,8 @@
 #include <Windows.h>
 #include <iostream>
+#include <conio.h>
 
-const int DOUBLE_CLICK_THRESHOLD = 250; // Time in milliseconds
-const int DOUBLE_CLICK_DISTANCE = 5;    // Distance in pixels
+int DOUBLE_CLICK_THRESHOLD; // Time in milliseconds
 
 HHOOK mouse_hook = NULL;
 POINT last_click_pos;
@@ -21,15 +21,15 @@ LRESULT CALLBACK MouseProc(int nCode, WPARAM wParam, LPARAM lParam)
     POINT current_pos;
     GetCursorPos(&current_pos);
 
+    std::cout << "Last Click Time: " << last_click_time << ", Current Click Time: " << current_time << ", Diff: " << current_time - last_click_time << std::endl;
+
     // Check if the event is a double-click
-    if (current_time - last_click_time <= DOUBLE_CLICK_THRESHOLD &&
-        abs(current_pos.x - last_click_pos.x) <= DOUBLE_CLICK_DISTANCE &&
-        abs(current_pos.y - last_click_pos.y) <= DOUBLE_CLICK_DISTANCE) {
+    if (current_time - last_click_time <= DOUBLE_CLICK_THRESHOLD) {
       // Log the double-click event
-      std::cout << "Double-click prevented" << std::endl;
+      std::cout << "============================ Double-click prevented ============================" << std::endl;
 
       // Ignore the event by returning zero
-      return 0;
+      return 1;
     }
 
     // Update the last click time and position
@@ -43,15 +43,22 @@ LRESULT CALLBACK MouseProc(int nCode, WPARAM wParam, LPARAM lParam)
 
 int main()
 {
+
   // Get the handle to the console window
   console_handle = GetStdHandle(STD_OUTPUT_HANDLE);
 
   // Set the mouse hook
   mouse_hook = SetWindowsHookEx(WH_MOUSE_LL, MouseProc, NULL, 0);
 
+  std::cout << "Input Double Click Threshold in Seconds: ";
+  std::cin >> DOUBLE_CLICK_THRESHOLD;
+
+  std::cout << "Your Double Click Threshold: " << DOUBLE_CLICK_THRESHOLD << " seconds" << std::endl;
+
+
   // Loop until the user presses a key
   std::cout << "Press any key to exit..." << std::endl;
-  while (!_kbhit()) {
+  while (!kbhit()) {
     // Process messages in the queue
     MSG msg;
     while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
