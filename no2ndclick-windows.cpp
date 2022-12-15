@@ -43,17 +43,16 @@ LRESULT CALLBACK MouseProc(int nCode, WPARAM wParam, LPARAM lParam)
 
 int main()
 {
+  // Input Threshold
+  std::cout << "Input Double Click Threshold in Seconds: ";
+  std::cin >> DOUBLE_CLICK_THRESHOLD;
+  std::cout << "Your Double Click Threshold: " << DOUBLE_CLICK_THRESHOLD << " seconds" << std::endl;
 
   // Get the handle to the console window
   console_handle = GetStdHandle(STD_OUTPUT_HANDLE);
 
   // Set the mouse hook
   mouse_hook = SetWindowsHookEx(WH_MOUSE_LL, MouseProc, NULL, 0);
-
-  std::cout << "Input Double Click Threshold in Seconds: ";
-  std::cin >> DOUBLE_CLICK_THRESHOLD;
-
-  std::cout << "Your Double Click Threshold: " << DOUBLE_CLICK_THRESHOLD << " seconds" << std::endl;
 
 
   // Loop until the user presses a key
